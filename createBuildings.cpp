@@ -32,9 +32,9 @@ int main(int argc,char** argv) {
 		building.h = dis(e1) * 10000.0;
 		std::cout << building.l
 			<< " "
-			<< building.r
-			<< " "
 			<< building.h
+			<< " "
+			<< building.r
 			<< std::endl;
 	}
 
