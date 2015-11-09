@@ -112,17 +112,19 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 			if(debug) std::cout << "new is shorter" << std::endl;
 			if( bld.l < p->l ) {
 				if(debug) std::cout << "new overlaps on left" << std::endl;
-				if(debug) std::cout << "insert new on before old" << std::endl;
+				if(debug) std::cout << "insert new one before old" << std::endl;
 				Building leftBuilding = bld;
 				leftBuilding.r = p->l;
 				insertBuilding(_buildingList,p,leftBuilding,debug);
-				return;
 			}
-			else {
+			if( bld.r > p->r ) {
 				if(debug) std::cout << "New overlaps on right" << std::endl;
 				if(debug) std::cout << "Adjust left side and check against next" << std::endl;
 				//move left wall of new building to remove overlap
 				bld.l = p->r;
+			}
+			else {
+				return;
 			}
 		}
 		//the new building is taller
