@@ -1,7 +1,8 @@
 #!/bin/bash
 
-for i in 1000 5000 10000 15000 30000 50000 75000 100000 1000000
+for i in 10000 15000 30000 50000 75000 100000 1000000
 do
-	echo $i
-	time ./skyline < $i > /dev/null 
+	FILENAME=./data/${i}_buildings.dat
+	echo "Processing " $FILENAME
+	time ./bin/skyline $FILENAME >> /dev/null 
 done
