@@ -68,7 +68,7 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 
 	if( p == _buildingList.end() ) {
 		if(debug) std::cout << "Insert first" << std::endl;
-		insertBuilding(_buildingList,p,bld);
+		insertBuilding(_buildingList,p,bld,debug);
 		return;
 	}
 
@@ -82,7 +82,7 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 		//because they are all to its right
 		if( bld.r <= p->l) {
 			if(debug) std::cout << "will not intersect" << std::endl;
-			insertBuilding(_buildingList,p,bld);
+			insertBuilding(_buildingList,p,bld,debug);
 			return;
 		}
 
@@ -115,7 +115,7 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 				if(debug) std::cout << "insert new on before old" << std::endl;
 				Building leftBuilding = bld;
 				leftBuilding.r = p->l;
-				insertBuilding(_buildingList,p,leftBuilding);
+				insertBuilding(_buildingList,p,leftBuilding,debug);
 				return;
 			}
 			else {
@@ -129,12 +129,10 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 		else {
 			if(debug) std::cout << "new is taller" << std::endl;
 			Building saveOld = *p;
-			bool overlapLeft(false);
 			if( p->l < bld.l ) {
 				if(debug) std::cout << "old overlaps on left" << std::endl;
 				if(debug) std::cout << "Shorten right side of old" << std::endl;
 				p->r = bld.l;
-				overlapLeft = true;
 				if( p->r <= p->l ) {
 					if(debug) {
 						std::cout << "Adjustment created invalid building: "
@@ -145,42 +143,31 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 					}
 
 				}
-				bld.l = p->r;
-			}
-			if( saveOld.r > bld.r ) {
-				if(debug) std::cout << "old overlaps on right" << std::endl;
-
-				std::list< Building >::iterator insertNewP = p;
-
-				if(overlapLeft) {
-					if(debug) std::cout << "insert new after old" << std::endl;
+				if( saveOld.r > bld.r ) {
+					if(debug) std::cout << "old overlaps on right" << std::endl;
 					++p;
-					insertNewP = p;
-					if(debug) std::cout << "insert 2nd part of old after new" << std::endl;
+					if(debug) std::cout << "insert new after old" << std::endl;
+					p = insertBuilding(_buildingList,p,bld,debug);
 					++p;
 					saveOld.l = bld.r;
-					insertBuilding(_buildingList,p,saveOld);
+					insertBuilding(_buildingList,p,saveOld,debug);
+					//since overlap on right, we are done
+					return;
 				}
-				else {
-					if(debug) std::cout << "insert new before old" << std::endl;
-					if(debug) std::cout << "adjust old" << std::endl;
-					p->l = bld.r;
-					if( p->r <= p->l ) {
-						if(debug) {
-							std::cout << "Adjustment created invalid building: "
-							<< p->l
-							<< " "
-							<< p->r
-							<< std::endl;
-						}
-
-					}
-				}
-				insertBuilding(_buildingList,insertNewP,bld);
-
-				return;
 			}
-			
+			else {
+				if(debug) std::cout << "old does not overlap on left" << std::endl;
+				if( p->r > bld.r ) {
+					if(debug) std::cout << "old overlaps on right" << std::endl;
+					if(debug) std::cout << "insert new before old" << std::endl;
+					insertBuilding(_buildingList,p,bld,debug);
+					if(debug) std::cout << "adjust left side of old so it does not overlap new" << std::endl;
+					p->l = bld.r;
+					//since overlap on right, we are done
+					return;
+				}
+
+			}
 		}
 
 		++p;
@@ -189,7 +176,7 @@ void addBuilding(std::list< Building >& _buildingList,const Building& _building,
 
 	if(!inserted) {
 		if(debug) std::cout << "insert at end" << std::endl;
-		insertBuilding(_buildingList,_buildingList.end(),bld);
+		insertBuilding(_buildingList,_buildingList.end(),bld,debug);
 	}
 
 	return;
@@ -236,12 +223,12 @@ int main(int argc,char** argv) {
 	std::cout << std::endl << std::endl;
 
 	for(;p!=buildings.end();++p) {
-		std::cout << std::endl << "BUILDING: " << p->l
-			<< " "
-			<< p->h
-			<< " "
-			<< p->r
-			<< std::endl;
+		//std::cout << std::endl << "BUILDING: " << p->l
+		//	<< " "
+		//	<< p->h
+		//	<< " "
+		//	<< p->r
+		//	<< std::endl;
 
 		if(start) {	
 			std::cout << p->l << " " << p->h;
@@ -256,7 +243,7 @@ int main(int argc,char** argv) {
 			y=p->h;
 		}
 	}
-	std::cout << std::endl << std::endl;
+	std::cout << " " << x << " 0" << std::endl << std::endl;
 
 	return 0;
 }
