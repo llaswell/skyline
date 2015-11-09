@@ -215,7 +215,7 @@ int main(int argc,char** argv) {
 
 	std::list<Building>::iterator p = buildings.begin();
 
-	std::cerr << "Effective number of buildings in skyline: " << buildings.size() << std::endl;	
+	if(debug) std::cerr << "Effective number of buildings in skyline: " << buildings.size() << std::endl;	
 
 	double x(0.0);
 	double y(0.0);
